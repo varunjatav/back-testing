@@ -48,11 +48,12 @@ const clientForm = mongoose.model("client", clientSchema);
 server.post("/contact", async (req, res) => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    const contact = new contactForm(req.body);
-    console.log(req.body);
+    const contact = new contactForm(req.body.data);
+    console.log(req.body.data);
     const doc = await contact.save();
     res.status(201).json(doc);
-    await sendMail(req.body, "Mail Regards Contact of Clients or Students", `${req.body.message}\nFrom: ${req.body.name}`);
+    // console.log(req.body);
+    await sendMail(req.body.data, "Mail Regards Contact of Clients or Students", `${req.body.data.message}\nFrom: ${req.body.data.name}`);
     await  sendMailUser(req.body, "Mail Regards Contact", "Thank you for contacting us!");
   } catch (error) {
     console.error(error);
@@ -79,7 +80,7 @@ server.post("/client", async (req, res) => {
     try {
       await mongoose.connect(process.env.MONGO_URI);
       const client = new clientForm(req.body);
-      console.log(req.body);
+      // console.log(req.body.data);
       const doc = await client.save();
       res.status(201).json(doc);
       await sendMail(req.body, "Mail Regards Client Services", `A new Client with name: ${req.body.name}, Date of Birth: ${req.body.date}, Age: ${req.body.age}, Gender: ${req.body.gender}, Address: ${req.body.address}, Sevice Type: ${req.body.serviceType}, Service: ${req.body.services}, Email: ${req.body.email}`);
